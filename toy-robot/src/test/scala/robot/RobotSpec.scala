@@ -1,8 +1,11 @@
-import org.scalatest.{FlatSpec, Matchers}
-import robot.Robot
-import robot.Robot._
+package robot
 
-class RobotSpec extends FlatSpec with Matchers {
+import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import robot.Robot._
+import org.scalacheck.{Arbitrary, Gen}
+
+class RobotSpec extends FlatSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   behavior of "placing"
 
@@ -50,6 +53,25 @@ class RobotSpec extends FlatSpec with Matchers {
 
   it should "not move outside the grid when moving South" in {
     Robot.move(5, List(Place(0, 0, South), Move)).pos shouldBe OnGrid(0, 0, South)
+  }
+
+  behavior of "turning"
+
+  it should "turn right from North" in {
+    Robot.move(5, List(Place(0, 0, North), Right)).pos shouldBe OnGrid(0, 0, East)
+  }
+
+  it should "turn left from North" in {
+    Robot.move(5, List(Place(0, 0, North), Left)).pos shouldBe OnGrid(0, 0, West)
+  }
+
+  it should "make full circle when turning 4 times in the same direction" in {
+    implicit lazy val facingArbitrary: Arbitrary[Facing] = Arbitrary(Gen.oneOf(North, East, South, West))
+    implicit lazy val turnArbitrary: Arbitrary[Command] = Arbitrary(Gen.oneOf(Left, Right))
+
+    forAll("turn", "facing") { (turn: Command, facing: Facing) =>
+      Robot.move(5, List(Place(0, 0, facing), turn, turn, turn, turn)).pos shouldBe OnGrid(0, 0, facing)
+    }
   }
 
   behavior of "reporting"

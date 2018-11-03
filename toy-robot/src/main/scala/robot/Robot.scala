@@ -28,6 +28,8 @@ object Robot {
 
   type App = State[Position, Op]
 
+  val facingOrder = List(North, East, South, West)
+
   private def processCommand(size: Int)(command: Command): App = State { position =>
     command match {
       case Place(x, y, f) if x >= 0 && x < size && y >= 0 && y < size => (OnGrid(x, y, f), NoOp)
@@ -43,6 +45,20 @@ object Robot {
             }
           case NotPlaced => (position, NoOp)
         }
+      case Right => position match {
+        case OnGrid(x, y, North) => (OnGrid(x, y, East), NoOp)
+        case OnGrid(x, y, East) => (OnGrid(x, y, South), NoOp)
+        case OnGrid(x, y, South) => (OnGrid(x, y, West), NoOp)
+        case OnGrid(x, y, West) => (OnGrid(x, y, North), NoOp)
+        case NotPlaced => (position, NoOp)
+      }
+      case Left => position match {
+        case OnGrid(x, y, North) => (OnGrid(x, y, West), NoOp)
+        case OnGrid(x, y, West) => (OnGrid(x, y, South), NoOp)
+        case OnGrid(x, y, South) => (OnGrid(x, y, East), NoOp)
+        case OnGrid(x, y, East) => (OnGrid(x, y, North), NoOp)
+        case NotPlaced => (position, NoOp)
+      }
       case Report => (position, ReportOp(position))
       case _ => (position, NoOp)
     }
