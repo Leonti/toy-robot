@@ -31,10 +31,11 @@ object Robot {
         position match {
           case OnGrid(x, y, f) =>
             f match {
-              case North => OnGrid(x, y + 1, f)
-              case East  => OnGrid(x + 1, y, f)
-              case South => OnGrid(x, y - 1, f)
-              case West  => OnGrid(x - 1, y, f)
+              case North if (y + 1) < size => OnGrid(x, y + 1, f)
+              case East if (x + 1) < size => OnGrid(x + 1, y, f)
+              case South if (y - 1) >= 0 => OnGrid(x, y - 1, f)
+              case West if (x - 1) >= 0 => OnGrid(x - 1, y, f)
+              case _ => position
             }
           case NotPlaced => position
         }
