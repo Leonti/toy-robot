@@ -19,7 +19,7 @@ object Robot {
   final case object Report                          extends Command
 
   sealed trait Position
-  final case object NotPlaced                   extends Position
+  final case object NotPlaced                  extends Position
   case class OnGrid(x: Int, y: Int, f: Facing) extends Position
 
   type App = State[Position, Position]
@@ -27,6 +27,17 @@ object Robot {
   private def processCommand(size: Int)(command: Command): App = State { position =>
     val next = command match {
       case Place(x, y, f) => OnGrid(x, y, f)
+      case Move =>
+        position match {
+          case OnGrid(x, y, f) =>
+            f match {
+              case North => OnGrid(x, y + 1, f)
+              case East  => OnGrid(x + 1, y, f)
+              case South => OnGrid(x, y - 1, f)
+              case West  => OnGrid(x - 1, y, f)
+            }
+          case NotPlaced => position
+        }
       case _ => position
     }
 
