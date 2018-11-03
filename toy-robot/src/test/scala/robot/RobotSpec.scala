@@ -58,16 +58,16 @@ class RobotSpec extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
   behavior of "turning"
 
   it should "turn right from North" in {
-    Robot.move(5, List(Place(0, 0, North), Right)).pos shouldBe OnGrid(0, 0, East)
+    Robot.move(5, List(Place(0, 0, North), TurnRight)).pos shouldBe OnGrid(0, 0, East)
   }
 
   it should "turn left from North" in {
-    Robot.move(5, List(Place(0, 0, North), Left)).pos shouldBe OnGrid(0, 0, West)
+    Robot.move(5, List(Place(0, 0, North), TurnLeft)).pos shouldBe OnGrid(0, 0, West)
   }
 
   it should "make full circle when turning 4 times in the same direction" in {
     implicit lazy val facingArbitrary: Arbitrary[Facing] = Arbitrary(Gen.oneOf(North, East, South, West))
-    implicit lazy val turnArbitrary: Arbitrary[Command] = Arbitrary(Gen.oneOf(Left, Right))
+    implicit lazy val turnArbitrary: Arbitrary[Command] = Arbitrary(Gen.oneOf(TurnLeft, TurnRight))
 
     forAll("turn", "facing") { (turn: Command, facing: Facing) =>
       Robot.move(5, List(Place(0, 0, facing), turn, turn, turn, turn)).pos shouldBe OnGrid(0, 0, facing)

@@ -14,8 +14,8 @@ object Robot {
   sealed trait Command
   final case class Place(x: Int, y: Int, f: Facing) extends Command
   final case object Move                            extends Command
-  final case object Left                            extends Command
-  final case object Right                           extends Command
+  final case object TurnLeft                        extends Command
+  final case object TurnRight                       extends Command
   final case object Report                          extends Command
 
   sealed trait Position
@@ -23,7 +23,7 @@ object Robot {
   case class OnGrid(x: Int, y: Int, f: Facing) extends Position
 
   sealed trait Op
-  final case object NoOp extends Op
+  final case object NoOp                 extends Op
   final case class ReportOp(p: Position) extends Op
 
   type App = State[Position, Op]
@@ -38,29 +38,31 @@ object Robot {
           case OnGrid(x, y, f) =>
             f match {
               case North if y + 1 < size => (OnGrid(x, y + 1, f), NoOp)
-              case East if x + 1 < size => (OnGrid(x + 1, y, f), NoOp)
-              case South if y - 1 >= 0 => (OnGrid(x, y - 1, f), NoOp)
-              case West if x - 1 >= 0 => (OnGrid(x - 1, y, f), NoOp)
-              case _ => (position, NoOp)
+              case East if x + 1 < size  => (OnGrid(x + 1, y, f), NoOp)
+              case South if y - 1 >= 0   => (OnGrid(x, y - 1, f), NoOp)
+              case West if x - 1 >= 0    => (OnGrid(x - 1, y, f), NoOp)
+              case _                     => (position, NoOp)
             }
           case NotPlaced => (position, NoOp)
         }
-      case Right => position match {
-        case OnGrid(x, y, North) => (OnGrid(x, y, East), NoOp)
-        case OnGrid(x, y, East) => (OnGrid(x, y, South), NoOp)
-        case OnGrid(x, y, South) => (OnGrid(x, y, West), NoOp)
-        case OnGrid(x, y, West) => (OnGrid(x, y, North), NoOp)
-        case NotPlaced => (position, NoOp)
-      }
-      case Left => position match {
-        case OnGrid(x, y, North) => (OnGrid(x, y, West), NoOp)
-        case OnGrid(x, y, West) => (OnGrid(x, y, South), NoOp)
-        case OnGrid(x, y, South) => (OnGrid(x, y, East), NoOp)
-        case OnGrid(x, y, East) => (OnGrid(x, y, North), NoOp)
-        case NotPlaced => (position, NoOp)
-      }
+      case TurnRight =>
+        position match {
+          case OnGrid(x, y, North) => (OnGrid(x, y, East), NoOp)
+          case OnGrid(x, y, East)  => (OnGrid(x, y, South), NoOp)
+          case OnGrid(x, y, South) => (OnGrid(x, y, West), NoOp)
+          case OnGrid(x, y, West)  => (OnGrid(x, y, North), NoOp)
+          case NotPlaced           => (position, NoOp)
+        }
+      case TurnLeft =>
+        position match {
+          case OnGrid(x, y, North) => (OnGrid(x, y, West), NoOp)
+          case OnGrid(x, y, West)  => (OnGrid(x, y, South), NoOp)
+          case OnGrid(x, y, South) => (OnGrid(x, y, East), NoOp)
+          case OnGrid(x, y, East)  => (OnGrid(x, y, North), NoOp)
+          case NotPlaced           => (position, NoOp)
+        }
       case Report => (position, ReportOp(position))
-      case _ => (position, NoOp)
+      case _      => (position, NoOp)
     }
   }
 
