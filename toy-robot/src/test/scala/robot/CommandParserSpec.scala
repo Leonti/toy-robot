@@ -17,4 +17,19 @@ class CommandParserSpec extends FlatSpec with Matchers {
     parser("PLACE 0,1,NORTH").commands() shouldBe Right(List(Place(0, 1, North)))
   }
 
+  it should "parse Move command" in {
+    parser("MOVE").commands() shouldBe Right(List(Move))
+  }
+
+  it should "parse TurnLeft command" in {
+    parser("LEFT").commands() shouldBe Right(List(TurnLeft))
+  }
+
+  it should "parse TurnRight command" in {
+    parser("RIGHT").commands() shouldBe Right(List(TurnRight))
+  }
+
+  it should "parse Report command" in {
+    parser("REPORT").commands() shouldBe Right(List(Report))
+  }
 }
