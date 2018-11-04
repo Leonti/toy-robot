@@ -27,17 +27,19 @@ object Robot {
   final case class ReportOp(p: Position) extends Op
 
   private def processCommand(size: Int)(command: Command): State[Position, Op] = State { position =>
+    def onGrid(x: Int, y: Int) = x >= 0 && x < size && y >= 0 && y < size
+
     command match {
-      case Place(x, y, f) => if (x >= 0 && x < size && y >= 0 && y < size) (OnGrid(x, y, f), NoOp) else (position, NoOp)
+      case Place(x, y, f) => if (onGrid(x, y)) (OnGrid(x, y, f), NoOp) else (position, NoOp)
       case Move =>
         position match {
           case OnGrid(x, y, f) =>
             f match {
-              case North if y + 1 < size => (OnGrid(x, y + 1, f), NoOp)
-              case East if x + 1 < size  => (OnGrid(x + 1, y, f), NoOp)
-              case South if y - 1 >= 0   => (OnGrid(x, y - 1, f), NoOp)
-              case West if x - 1 >= 0    => (OnGrid(x - 1, y, f), NoOp)
-              case _                     => (position, NoOp)
+              case North if onGrid(x, y + 1) => (OnGrid(x, y + 1, f), NoOp)
+              case East if onGrid(x + 1, y)  => (OnGrid(x + 1, y, f), NoOp)
+              case South if onGrid(x, y - 1) => (OnGrid(x, y - 1, f), NoOp)
+              case West if onGrid(x - 1, y)  => (OnGrid(x - 1, y, f), NoOp)
+              case _                         => (position, NoOp)
             }
           case NotPlaced => (position, NoOp)
         }
