@@ -1,6 +1,9 @@
-#Toy Robot
+# Toy Robot
 
-##Run examples:
+Program accepts input from `stdin` as a list of commands separated by new lines  
+Output is redirected to `stdout`
+
+## Run examples:
 
 Example A:
 ```
