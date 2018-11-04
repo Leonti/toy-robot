@@ -17,7 +17,7 @@ class RobotApp[F[_]: Monad](commandReader: CommandReader[F], outputWriter: Outpu
 
   private def printOp(op: Op): F[Unit] = op match {
     case ReportOp(OnGrid(x, y, facing)) => outputWriter.writeLine(s"$x,$y,${formatFacing(facing)}")
-    case ReportOp(NotPlaced)            => outputWriter.writeLine("Robot is not on the table!")
+    case ReportOp(NotPlaced)            => outputWriter.writeLine("Robot is not on the grid!")
     case NoOp                           => Monad[F].pure(())
   }
 

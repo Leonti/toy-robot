@@ -4,10 +4,18 @@ import robot.StateCommandWriter.TestProgram
 
 class RobotAppSpec extends FlatSpec with Matchers {
 
-  it should "print it's position" in {
-    val app = new RobotApp[TestProgram](new StaticCommandReader("PLACE 0,0,NORTH\nLEFT\nREPORT"), new StateCommandWriter())
+  private def runProgram(commands: String): List[String] = {
+    val app = new RobotApp[TestProgram](new StaticCommandReader(commands), new StateCommandWriter())
     val (printed, _) = app.runRobot().run(List()).value
-    printed shouldBe List("0,0,WEST")
+    printed
+  }
+
+  it should "print it's position" in {
+    runProgram("PLACE 0,0,NORTH\nLEFT\nREPORT") shouldBe List("0,0,WEST")
+  }
+
+  it should "print error if robot is not on the table" in {
+    runProgram("REPORT") shouldBe List("Robot is not on the grid!")
   }
 
 }
