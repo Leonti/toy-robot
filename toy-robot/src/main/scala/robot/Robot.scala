@@ -32,7 +32,7 @@ object Robot {
 
   private def processCommand(size: Int)(command: Command): App = State { position =>
     command match {
-      case Place(x, y, f) if x >= 0 && x < size && y >= 0 && y < size => (OnGrid(x, y, f), NoOp)
+      case Place(x, y, f) => if (x >= 0 && x < size && y >= 0 && y < size) (OnGrid(x, y, f), NoOp) else (position, NoOp)
       case Move =>
         position match {
           case OnGrid(x, y, f) =>
@@ -62,7 +62,6 @@ object Robot {
           case NotPlaced           => (position, NoOp)
         }
       case Report => (position, ReportOp(position))
-      case _      => (position, NoOp)
     }
   }
 

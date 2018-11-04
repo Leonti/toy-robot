@@ -1,7 +1,7 @@
 package robot
-import cats.Id
+import cats.Monad
 import robot.parser.CommandReader
 
-class StaticCommandReader(result: String) extends CommandReader[Id] {
-  override def readRawCommands: Id[String] = result
+class StaticCommandReader[F[_]: Monad](result: String) extends CommandReader[F] {
+  override def readRawCommands: F[String] = Monad[F].pure(result)
 }
