@@ -1,8 +1,7 @@
-package robot.parser
-
+package robot
+import cats.data.ValidatedNel
 import cats.implicits._
 import robot.Robot._
-import cats.data.ValidatedNel
 
 object CommandParser {
   case class ParseError(value: String) extends AnyVal

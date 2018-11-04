@@ -3,8 +3,8 @@ package robot
 import cats.Monad
 import cats.implicits._
 import robot.Robot._
-import robot.parser.CommandReader
-import robot.parser.CommandParser.parseCommands
+import robot.io.{CommandReader, OutputWriter}
+import CommandParser.parseCommands
 
 class RobotApp[F[_]: Monad](commandReader: CommandReader[F], outputWriter: OutputWriter[F]) {
 

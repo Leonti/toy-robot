@@ -1,6 +1,7 @@
 package robot
 import org.scalatest.{FlatSpec, Matchers}
-import robot.StateCommandWriter.TestProgram
+import robot.effects.StateCommandWriter.TestProgram
+import robot.effects.{StateCommandWriter, StaticCommandReader}
 
 class RobotAppSpec extends FlatSpec with Matchers {
 

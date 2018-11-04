@@ -1,6 +1,8 @@
-package robot
+package robot.effects
+
 import cats.data.State
-import robot.StateCommandWriter.TestProgram
+import robot.effects.StateCommandWriter.TestProgram
+import robot.io.OutputWriter
 
 object StateCommandWriter {
   type TestProgram[A] = State[List[String], A]

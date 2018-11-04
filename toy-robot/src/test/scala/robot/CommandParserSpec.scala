@@ -1,7 +1,7 @@
 package robot
 import org.scalatest.{FlatSpec, Matchers}
 import robot.Robot._
-import robot.parser.CommandParser.{ParseError, parseCommands}
+import CommandParser.{ParseError, parseCommands}
 
 class CommandParserSpec extends FlatSpec with Matchers {
 
