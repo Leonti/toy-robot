@@ -2,6 +2,7 @@ package robot
 import org.scalatest.{FlatSpec, Matchers}
 import robot.Robot._
 import robot.parser.CommandParser
+import robot.parser.CommandParser.ParseError
 
 class CommandParserSpec extends FlatSpec with Matchers {
 
@@ -15,6 +16,10 @@ class CommandParserSpec extends FlatSpec with Matchers {
 
   it should "parse Place command" in {
     parser("PLACE 0,1,NORTH").commands() shouldBe Right(List(Place(0, 1, North)))
+  }
+
+  it should "fail if can't parse facing" in {
+    parser("PLACE 0,1,UNKNOWN").commands() shouldBe Left(List(ParseError("""Could not parse facing "UNKNOWN"""")))
   }
 
   it should "parse Move command" in {
@@ -31,5 +36,16 @@ class CommandParserSpec extends FlatSpec with Matchers {
 
   it should "parse Report command" in {
     parser("REPORT").commands() shouldBe Right(List(Report))
+  }
+
+  it should "parse multiple commands" in {
+    parser("LEFT\nREPORT").commands() shouldBe Right(List(TurnLeft, Report))
+  }
+
+  it should "collect errors" in {
+    parser("LEFTio\nREPORTio").commands() shouldBe Left(List(
+      ParseError(s"""Could not parse command "LEFTio""""),
+      ParseError(s"""Could not parse command "REPORTio"""")
+    ))
   }
 }
