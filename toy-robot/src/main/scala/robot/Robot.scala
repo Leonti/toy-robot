@@ -26,11 +26,7 @@ object Robot {
   final case object NoOp                 extends Op
   final case class ReportOp(p: Position) extends Op
 
-  type App = State[Position, Op]
-
-  val facingOrder = List(North, East, South, West)
-
-  private def processCommand(size: Int)(command: Command): App = State { position =>
+  private def processCommand(size: Int)(command: Command): State[Position, Op] = State { position =>
     command match {
       case Place(x, y, f) => if (x >= 0 && x < size && y >= 0 && y < size) (OnGrid(x, y, f), NoOp) else (position, NoOp)
       case Move =>
